@@ -25,9 +25,7 @@ class ItemTableViewCell: UITableViewCell {
     
     private let checkedImage = UIImage(systemName: "checkmark.square.fill")
     private let squareImage = UIImage(systemName: "square")
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-    }
+
     
     func update(with item: Item) {
         self.item = item

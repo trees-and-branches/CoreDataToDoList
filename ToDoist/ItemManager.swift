@@ -10,32 +10,34 @@ import Foundation
 class ItemManager {
     static let shared = ItemManager()
     
-    var allItems = Set<Item>() {
-        didSet {
-            items = allItems.filter { $0.completedAt == nil }.sorted(by: { $0.createdAt >  $1.createdAt })
-            completedItems =
-            allItems.filter { $0.completedAt != nil }.sorted(by: { $0.createdAt >  $1.createdAt })
-        }
+    var allItems = [Item]()
+    var items: [Item] {
+        allItems.filter { $0.completedAt == nil }.sorted(by: { $0.sortDate >  $1.sortDate })
     }
-    var items = [Item]()
-    var completedItems = [Item]()
+    var completedItems: [Item] {
+        allItems.filter { $0.completedAt != nil }.sorted(by: { $0.sortDate >  $1.sortDate })
+    }
 
     
     // Funcs
     
     func add(_ item: Item) {
-        allItems.update(with: item)
+        allItems.removeAll(where: { $0.id == item.id })
+        allItems.append(item)
     }
     
     func toggleItemCompletion(_ item: Item) {
         var updatedItem = item
         updatedItem.completedAt = item.isCompleted ? nil : Date()
-        allItems.update(with: updatedItem)
+        if let index = allItems.firstIndex(of: item) {
+            allItems.remove(at: index)
+        }
+        allItems.append(updatedItem)
     }
     
     func remove(_ item: Item) {
-        guard allItems.contains(item) else { return }
-        allItems.remove(item)
+        guard let index = allItems.firstIndex(of: item) else { return }
+        allItems.remove(at: index)
     }
     
     // Mock Data

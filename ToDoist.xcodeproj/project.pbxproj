@@ -10,6 +10,7 @@
 		2E176FDE2903B30B001B5AE6 /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E176FDD2903B30B001B5AE6 /* ItemTableViewCell.swift */; };
 		2E176FE02903B9E4001B5AE6 /* ItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E176FDF2903B9E4001B5AE6 /* ItemManager.swift */; };
 		2E176FE22903BA15001B5AE6 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E176FE12903BA15001B5AE6 /* Item.swift */; };
+		2E176FE629051660001B5AE6 /* ItemDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E176FE529051660001B5AE6 /* ItemDataSource.swift */; };
 		2E26E12A28FB6BDF00717208 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E26E12928FB6BDF00717208 /* AppDelegate.swift */; };
 		2E26E12C28FB6BDF00717208 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E26E12B28FB6BDF00717208 /* SceneDelegate.swift */; };
 		2E26E12E28FB6BDF00717208 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E26E12D28FB6BDF00717208 /* ItemsViewController.swift */; };
@@ -23,6 +24,7 @@
 		2E176FDD2903B30B001B5AE6 /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 		2E176FDF2903B9E4001B5AE6 /* ItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManager.swift; sourceTree = "<group>"; };
 		2E176FE12903BA15001B5AE6 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		2E176FE529051660001B5AE6 /* ItemDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDataSource.swift; sourceTree = "<group>"; };
 		2E26E12628FB6BDF00717208 /* ToDoist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E26E12928FB6BDF00717208 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2E26E12B28FB6BDF00717208 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				2E176FDF2903B9E4001B5AE6 /* ItemManager.swift */,
 				2E176FE12903BA15001B5AE6 /* Item.swift */,
 				2E176FDD2903B30B001B5AE6 /* ItemTableViewCell.swift */,
+				2E176FE529051660001B5AE6 /* ItemDataSource.swift */,
 				2E26E12F28FB6BDF00717208 /* Main.storyboard */,
 				2E26E13528FB6BE000717208 /* Assets.xcassets */,
 				2E26E13728FB6BE000717208 /* LaunchScreen.storyboard */,
@@ -151,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E26E12E28FB6BDF00717208 /* ItemsViewController.swift in Sources */,
+				2E176FE629051660001B5AE6 /* ItemDataSource.swift in Sources */,
 				2E26E12A28FB6BDF00717208 /* AppDelegate.swift in Sources */,
 				2E176FDE2903B30B001B5AE6 /* ItemTableViewCell.swift in Sources */,
 				2E26E13428FB6BDF00717208 /* ToDoist.xcdatamodeld in Sources */,

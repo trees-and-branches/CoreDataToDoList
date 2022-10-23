@@ -22,13 +22,22 @@ struct Item: Identifiable {
         }
         return createdAtString
     }
+    var sortDate: Date {
+        if isCompleted, let completedAt {
+            return completedAt
+        }
+        return createdAt
+    }
     
 }
 
 extension Item: Equatable {
     
     static func ==(lhs: Item, rhs: Item) -> Bool {
-        return lhs.id == rhs.id
+        return lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.createdAt == rhs.createdAt &&
+        lhs.completedAt == rhs.completedAt
     }
     
 }
@@ -46,7 +55,9 @@ extension Item {
     
     static var relativeDateFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
-        formatter.dateTimeStyle = .numeric
+        formatter.dateTimeStyle = .named
+        formatter.unitsStyle = .abbreviated
+        formatter.formattingContext = .beginningOfSentence
         return formatter
     }()
 
