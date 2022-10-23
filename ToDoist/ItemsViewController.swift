@@ -13,10 +13,15 @@ class ItemsViewController: UIViewController {
         case incomplete, complete
     }
     
+    // MARK: - Outlets
+    
+    @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var tableView: UITableView!
     
-    private let itemManager = ItemManager.shared
     
+    // MARK: - Properties
+    
+    private let itemManager = ItemManager.shared
     private lazy var datasource: ItemDataSource = {
         let datasource = ItemDataSource(tableView: tableView) { tableView, indexPath, item in
             let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.reuseIdentifier) as! ItemTableViewCell
@@ -28,33 +33,55 @@ class ItemsViewController: UIViewController {
     }()
 
     
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.dataSource = datasource
-        itemManager.loadMockData()
         generateNewSnapshot()
     }
 
 }
 
+
+// MARK: - Item Cell Delegate
+
 extension ItemsViewController: ItemCellDelegate {
 
     func completeButtonPressed(item: Item) {
         itemManager.toggleItemCompletion(item)
-        generateNewSnapshot(updatedItem: item)
+        generateNewSnapshot()
     }
     
 }
 
 
+// MARK: - TextField Delegate
+
+extension ItemsViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard let text = textField.text, !text.isEmpty else { return true }
+        itemManager.createNewItem(with: text)
+        textField.text = ""
+        generateNewSnapshot()
+        return true
+    }
+    
+}
+
+
+// MARK: - Private
+
 private extension ItemsViewController {
     
-    func generateNewSnapshot(updatedItem: Item? = nil) {
+    func generateNewSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<TableSection, Item>()
-        snapshot.appendSections([.incomplete])
-        snapshot.appendItems(itemManager.items, toSection: .incomplete)
-        
+        if !itemManager.items.isEmpty {
+            snapshot.appendSections([.incomplete])
+            snapshot.appendItems(itemManager.items, toSection: .incomplete)
+        }
         if !itemManager.completedItems.isEmpty {
             snapshot.appendSections([.complete])
             snapshot.appendItems(itemManager.completedItems, toSection: .complete)

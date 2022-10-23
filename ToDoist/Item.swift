@@ -13,6 +13,8 @@ struct Item: Identifiable {
     let createdAt: Date
     var completedAt: Date?
     
+    // Computed
+    
     var isCompleted: Bool {
         completedAt != nil
     }
@@ -28,8 +30,28 @@ struct Item: Identifiable {
         }
         return createdAt
     }
+    var createdAtString: String {
+        Item.relativeDateFormatter.localizedString(for: createdAt, relativeTo: Date())
+    }
+    var completedAtString: String? {
+        guard let completedAt else { return nil }
+        return Item.relativeDateFormatter.localizedString(for: completedAt, relativeTo: Date())
+    }
+    
+
+    // Init
+    
+    init(id: String = UUID().uuidString, title: String, createdAt: Date = Date(), completedAt: Date? = nil) {
+        self.id = id
+        self.title = title
+        self.createdAt = createdAt
+        self.completedAt = completedAt
+    }
     
 }
+
+
+// MARK: - Equatable
 
 extension Item: Equatable {
     
@@ -42,6 +64,9 @@ extension Item: Equatable {
     
 }
 
+
+// MARK: - Hashable
+
 extension Item: Hashable {
     
     func hash(into hasher: inout Hasher) {
@@ -50,6 +75,8 @@ extension Item: Hashable {
     
 }
 
+
+// MARK: - Date Formatter
 
 extension Item {
     
@@ -61,13 +88,4 @@ extension Item {
         return formatter
     }()
 
-    var createdAtString: String {
-        Item.relativeDateFormatter.localizedString(for: createdAt, relativeTo: Date())
-    }
-    
-    var completedAtString: String? {
-        guard let completedAt else { return nil }
-        return Item.relativeDateFormatter.localizedString(for: completedAt, relativeTo: Date())
-    }
-    
 }

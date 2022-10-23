@@ -21,9 +21,9 @@ class ItemManager {
     
     // Funcs
     
-    func add(_ item: Item) {
-        allItems.removeAll(where: { $0.id == item.id })
-        allItems.append(item)
+    func createNewItem(with title: String) {
+        let newItem = Item(title: title)
+        allItems.append(newItem)
     }
     
     func toggleItemCompletion(_ item: Item) {
@@ -49,7 +49,7 @@ class ItemManager {
         let mock1 = Item(id: UUID().uuidString, title: "Make my bed", createdAt: Date(), completedAt: nil)
         let mock2 = Item(id: UUID().uuidString, title: "Take out the trash", createdAt: twoDaysAgo, completedAt: nil)
         let mock3 = Item(id: UUID().uuidString, title: "Buy that thing", createdAt: twoDaysAgo, completedAt: yesterday)
-        let mock4 = Item(id: UUID().uuidString, title: "Finish homework", createdAt: yesterday, completedAt: Date())
+        let mock4 = Item(id: UUID().uuidString, title: "Finish homework", createdAt: yesterday, completedAt: tenMinutesAgo)
         allItems = [mock1, mock2, mock3, mock4]
     }
 
