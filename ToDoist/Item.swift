@@ -10,11 +10,14 @@ import Foundation
 struct Item: Identifiable {
     let id: String
     let title: String
-    let createdAt: Date
+    let createdAt: Date?
     var completedAt: Date?
     
     // Computed
     
+    var createdAtDate: Date {
+        createdAt ?? Date.distantPast
+    }
     var isCompleted: Bool {
         completedAt != nil
     }
@@ -28,10 +31,10 @@ struct Item: Identifiable {
         if isCompleted, let completedAt {
             return completedAt
         }
-        return createdAt
+        return createdAtDate
     }
     var createdAtString: String {
-        Item.relativeDateFormatter.localizedString(for: createdAt, relativeTo: Date())
+        Item.relativeDateFormatter.localizedString(for: createdAtDate, relativeTo: Date())
     }
     var completedAtString: String? {
         guard let completedAt else { return nil }
@@ -39,8 +42,8 @@ struct Item: Identifiable {
     }
     
 
+    // Remove for Core Data
     // Init
-    
     init(id: String = UUID().uuidString, title: String, createdAt: Date = Date(), completedAt: Date? = nil) {
         self.id = id
         self.title = title
@@ -50,7 +53,7 @@ struct Item: Identifiable {
     
 }
 
-
+// Remove for Core Data
 // MARK: - Equatable
 
 extension Item: Equatable {
@@ -64,7 +67,7 @@ extension Item: Equatable {
     
 }
 
-
+// Remove for Core Data
 // MARK: - Hashable
 
 extension Item: Hashable {
