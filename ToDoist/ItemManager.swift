@@ -35,9 +35,18 @@ class ItemManager {
         allItems.append(updatedItem)
     }
     
+    func delete(at indexPath: IndexPath) {
+        remove(item(at: indexPath))
+    }
+    
     func remove(_ item: Item) {
         guard let index = allItems.firstIndex(of: item) else { return }
         allItems.remove(at: index)
+    }
+
+    private func item(at indexPath: IndexPath) -> Item {
+        let items = indexPath.section == 0 ? items : completedItems
+        return items[indexPath.row]
     }
 
 }

@@ -29,6 +29,7 @@ class ItemsViewController: UIViewController {
             cell.delegate = self
             return cell
         }
+        datasource.delegate = self
         return datasource
     }()
 
@@ -51,6 +52,17 @@ extension ItemsViewController: ItemCellDelegate {
 
     func completeButtonPressed(item: Item) {
         itemManager.toggleItemCompletion(item)
+        generateNewSnapshot()
+    }
+    
+}
+
+
+// MARK: - ItemDelegate
+
+extension ItemsViewController: ItemDelegate {
+    
+    func shouldReload() {
         generateNewSnapshot()
     }
     
