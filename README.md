@@ -204,15 +204,19 @@ Lets build it!
 - The first change will be with the model. Instead of just one Entity of `Item` we'll need a new entity to represent a list that will have a relationship with its Items 😘. A realy steamy relationship 😏
 - Go to model and add a new entity and lets call it `ToDoList`
   - Give the new entity a couple of its very own properties:
+    - `id: String`
     - `title: String`
     - `createdAt: Date`
     - `modifiedAt: Date`
   - Now create a relationship with `Item`. We've done this a few times already so make sure to give it all the love it deserves
+  - Add a new Swift file called `ToDoList`
+  - Create an extension of the Core Data entity you just made `extension ToDoList {`
+  - Create a property (`itemsArray`) that converts the `items` from its native type (`NSSet`) to a swift Array
   
 ## UI
 - Lets build the UI
 - Go to the storyboard and add a new view controller for the list of lists 😏. (The table that shows all your `ToDoList` entities)
-- Embed it in a NavigationView
+- Embed it in a NavigationController
 - (Make sure the `ItemsViewController` is not also in a navigation controller. 2 navigation controllers is a no-no)
 - Make sure to implement the tableview Datasource (Doesn't have to be a Diffable one)
 - Feel free to use a standard UITableViewCell. You don't need to do a custom cell here
@@ -230,6 +234,9 @@ Lets build it!
 ## Push it!
 - When a user taps on a cell `didSelectRow(at: IndexPath)` we need to push on the `ItemsViewController` onto the stack
 - Change `ItemsViewController` so that it can be initialized with a `ToDoList`
+- Now the `ItemsViewController` gets initialized with a `ToDoList`
+- Now you actually don't even need a fetch request to get the items of a list. A `ToDoList` has an array of its `items` built in to the relationship
+- That's the beauty of Core Data relationship, if you have the parent entity (`ToDoList`) you can just call `list.itemsArray` to get all of its child entities (`[Item]`)
 - Then modify the fetch requests to only fetch the items that belong to that list
   - hint: You may need something called a compound predicate for this. 
 - That's it! that's all the instructions for today. (we TOLD you it would be less hand holding)
@@ -245,6 +252,6 @@ Lets build it!
 - There's a lot of power in a well-worded Google search
   - `iOS Swift how to add a Core Data relationship`
   - `iOS Swfit Core Data how to write a compound predicate`
-  - `iOS swift custom viewcontroller initializer`
+  - `iOS swift initializer injection with storyboard segues`
   - etc.
   
