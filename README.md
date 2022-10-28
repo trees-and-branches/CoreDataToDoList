@@ -7,7 +7,7 @@
 - For this lab, you will be helping the user persist their data accross launches using (you guessed it) CORE DATA
 - Before we dive into Core Data though, familiarize yourself with the project. 
 
-### Get to know the project
+## Get to know the project
   - 🔨🏃‍♂️ Build and Run
   - Type some to-do items
   - check any number of them off as completed
@@ -21,7 +21,7 @@
       - Right now its simple because all the data is stored in a local array of `[Item]`
       - But pretty soon it will be on the AFTER side of a Before and After Core Data facelift!
   
-### Add Core Data Model
+## Add Core Data Model
 - Lets do some modeling. . . Lets start with `Blue Steel` and then move on to `Magnum` jk 😜
 - There's already a model file in the project but no entities to be found
 - Add a new entity called `Item`
@@ -42,7 +42,8 @@
   - Delete all the other code that says  `// Remove for Core Data`
   - You'll notice you still can't build and run. A Core Data subclass is a lot different than a swift struct. We'll need to jump through the `Core Data` hoops to get this app working again. 
   - Onward!
-### Add the Stack
+  
+## Add the Stack
 - To access the guts of Core Data you have to have an `NSPersistentContainer` and an `NSPersistentStoreCoordinator` and a handfu of other long names that start with `NS`
   - And remember we DON'T expect a 10 page essay on the inner workings of the Core Data Stack (only 7 pages 😏 jk)
   - We just expect you to know that there's a core data stack that gives you access to the ManagedObjectContext which is where all your work will happen. 
@@ -68,7 +69,7 @@
   - When we need the use the viewContext, we'll use `PersistenceController.shared.viewContext`
   - Let's put that context to use. We'll use the context in creating, retreiving, updating, and deleting to do items
   
-### Crud (Create)
+## Crud (Create)
 - Go to the `ItemManager` and check out the `createNewItem()` function
 - It use to just initialize an Item, and append it to the array of items. 
 - But you can't just initialize a subclass of `NSManagedObject` like you would a swift struct. You have to use a designated initializer.
@@ -91,7 +92,7 @@ newItem.completedAt = nil
 - If you build and run, you will be adding items into Core Data, but your list of items is still based on the local array of item, so they won't show up
 - Lets do that next
   
-### cRud (Retrieve)
+## cRud (Retrieve)
 - So how do you get data out of core data?
 - A: Fetch Requests
 - A Fetch Request is a request for a specific subset of Core Data entities. 
@@ -155,6 +156,8 @@ func fetchIncompleteItems() -> [Item] {
 - Assuming you did everything correctly, and if you added any items earlier before they were showing up, they should show up now! They were saved in Core Data and persist accross launches now! 
 - What if we want the newest item to show up at the top?
 - Queue: Sort Descriptors
+
+### Sorting
 - Fetch Requests can have a sort descriptor to indicate which order the data should come back in
 - Sort descriptors look like this: 
 - `NSSortDescriptor(key: "createdAt", ascending: false)`
@@ -164,13 +167,20 @@ func fetchIncompleteItems() -> [Item] {
 - Make sure to add it the `fetchCompletedItems` function as well (but with `completedAt`)
 - And voila, sorted by the right date
 
-### crUd (Update)
+## crUd (Update)
 - You'll notice the button to mark an item as completed does not work. That's because we commented out the code.
 - Let's refactor it for Core Data
-- Updating is easy, just make a change to the entity, and save the context. Its that easy
-- 
-  
-### cruD (Delete)
+- Updating is easy, just make a change to the entity, and save the context.
+- Should look like this:
+  ```
+    func toggleItemCompletion(_ item: Item) {
+      item.completedAt = item.isCompleted ? nil : Date()
+      PersistenceController.shared.saveContext()
+    }
+
+  ```
+
+## cruD (Delete)
 - Lets buy the last letter to solve the puzzle
 - Deletion is simple as well. 
 - Just get the context, and call `.delete()` on it
@@ -183,6 +193,58 @@ func fetchIncompleteItems() -> [Item] {
     }
   ```
 
-### That's it.. . for Today!
+## End Part 1
 
-# Part 2
+# Part 2 - Multiple Lists
+- Wouldn't it be cool if we had not just one list but as many as the user wanted to make??
+Lets build it!
+- Part 2 there won't be as much hand holding. You'll need to infer more based on the instructions and look some stuff up
+
+## Model
+- The first change will be with the model. Instead of just one Entity of `Item` we'll need a new entity to represent a list that will have a relationship with its Items 😘. A realy steamy relationship 😏
+- Go to model and add a new entity and lets call it `ToDoList`
+  - Give the new entity a couple of its very own properties:
+    - `title: String`
+    - `createdAt: Date`
+    - `modifiedAt: Date`
+  - Now create a relationship with `Item`. We've done this a few times already so make sure to give it all the love it deserves
+  
+## UI
+- Lets build the UI
+- Go to the storyboard and add a new view controller for the list of lists 😏. (The table that shows all your `ToDoList` entities)
+- Embed it in a NavigationView
+- (Make sure the `ItemsViewController` is not also in a navigation controller. 2 navigation controllers is a no-no)
+- Make sure to implement the tableview Datasource (Doesn't have to be a Diffable one)
+- Feel free to use a standard UITableViewCell. You don't need to do a custom cell here
+- The cell should display the `title` of the `ToDoList` and the subtitle should show the count of items in that list
+- Add a plus button to the trailing nav bar button
+- It should display a UIAlertController that contains a UITextField for entering the title of the new list
+- Give it a cancel and save button. The save button will call a new function to create a `ToDoList` that you will write, right now
+  
+## List CRUD
+- You'll need all the same functions for creating, retrieving, updating, and deleting a `ToDoList` from Core Data. Add those now
+  - Put them in the ItemController
+  - They'll look very similar to the other crud functions we wrote for `Item`s
+  - You won't need 2 different fetch requests for `ToDoList`s. Just the one sorted by `modifiedAt` that returns all the user's to-do lists
+  
+## Push it!
+- When a user taps on a cell `didSelectRow(at: IndexPath)` we need to push on the `ItemsViewController` onto the stack
+- Change `ItemsViewController` so that it can be initialized with a `ToDoList`
+- Then modify the fetch requests to only fetch the items that belong to that list
+  - hint: You may need something called a compound predicate for this. 
+- That's it! that's all the instructions for today. (we TOLD you it would be less hand holding)
+  
+## Final thoughts/hints
+- YOU CAN DO THIS! Don't give up
+- Your FIRST source should be the working code you already have. 
+- Your SECOND source should be Google (favor apple docs, stack overflow, hacking with swift, other blogs, etc.)
+- Your THIRD source should be a neighbor to collaborate and brainstorm together
+- Your FOURTH source should be the instructor
+- Try not to look at the answer branch too early. There's learning in the struggle
+- But also if you're struggling for more than ~17 minutes on the same thing, ask for help. Aint nobody got time for that! Class is only 3 hours
+- There's a lot of power in a well-worded Google search
+  - `iOS Swift how to add a Core Data relationship`
+  - `iOS Swfit Core Data how to write a compound predicate`
+  - `iOS swift custom viewcontroller initializer`
+  - etc.
+  
