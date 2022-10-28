@@ -1,5 +1,5 @@
 # CoreDataToDoist (Lab)
-
+# Part 1
 ## Intro
 - If you look at the `main` branch you'll see a lot of code already. In fact, this is a functioning to-do app already! 
 - But we can do better than functional!
@@ -171,5 +171,18 @@ func fetchIncompleteItems() -> [Item] {
 - 
   
 ### cruD (Delete)
+- Lets buy the last letter to solve the puzzle
+- Deletion is simple as well. 
+- Just get the context, and call `.delete()` on it
+- Should look like this: 
+  ```
+      func remove(_ item: Item) {
+        let context = PersistenceController.shared.viewContext
+        context.delete(item)
+        PersistenceController.shared.saveContext()
+    }
+  ```
 
+### That's it.. . for Today!
 
+# Part 2
