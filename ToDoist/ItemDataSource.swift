@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ItemDelegate {
-    func shouldReload()
+    func deleteItem(at indexPath: IndexPath)
 }
 
 class ItemDataSource: UITableViewDiffableDataSource<ItemsViewController.TableSection, Item> {
@@ -31,8 +31,7 @@ class ItemDataSource: UITableViewDiffableDataSource<ItemsViewController.TableSec
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else { return }
-        ItemManager.shared.delete(at: indexPath)
-        delegate?.shouldReload()
+        delegate?.deleteItem(at: indexPath)
     }
     
 }

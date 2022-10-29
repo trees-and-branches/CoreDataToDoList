@@ -62,7 +62,8 @@ extension ItemsViewController: ItemCellDelegate {
 
 extension ItemsViewController: ItemDelegate {
     
-    func shouldReload() {
+    func deleteItem(at indexPath: IndexPath) {
+        ItemManager.shared.delete(at: indexPath)
         generateNewSnapshot()
     }
     
