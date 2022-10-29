@@ -232,14 +232,27 @@ Lets build it!
   - You won't need 2 different fetch requests for `ToDoList`s. Just the one sorted by `modifiedAt` that returns all the user's to-do lists
   
 ## Push it!
-- When a user taps on a cell `didSelectRow(at: IndexPath)` we need to push on the `ItemsViewController` onto the stack
+- When a user taps on a list we want to push on the `ItemsViewController` to show them the items of that list they seleted
+- Set up a segue from the list cell to push on the `ItemsViewController` onto the stack
 - Change `ItemsViewController` so that it can be initialized with a `ToDoList`
-- Now the `ItemsViewController` gets initialized with a `ToDoList`
+  - Check out [this article](https://cocoacasts.com/initializer-injection-with-view-controllers-storyboards-and-segues) for some help
+- Set up your segue and connect it to the code file with an `@IBSegueAction` 
+- In the SegueAction, initialize the `ItemsViewController` with the new initializer that accepts a `ToDoList`
+
+## Update Items CRUD
+### Create
+- When we create an item, we need to associate it with the list to setup the relationship
+- Inside `createNewItem` pass in a `ToDoList`
+- Assign the `newList.toDoList` to that list. Then the relationship is established (both ways)
+### Retrieve
+- We need to change how we fetch items now because there's a better way to do it. Through the relationship. 
 - Now you actually don't even need a fetch request to get the items of a list. A `ToDoList` has an array of its `items` built in to the relationship
-- That's the beauty of Core Data relationship, if you have the parent entity (`ToDoList`) you can just call `list.itemsArray` to get all of its child entities (`[Item]`)
-- Then modify the fetch requests to only fetch the items that belong to that list
-  - hint: You may need something called a compound predicate for this. 
+- That's the beauty of Core Data relationship, if you have the parent entity (`ToDoList`) you can just use the relationshipto get all of its child entities (`[Item]`)
+- Should look like this: `toDoList.itemsArray`
+- That gives you all the items, then filter them based on their completed status, and sort them by `sortDate`
 - That's it! that's all the instructions for today. (we TOLD you it would be less hand holding)
+### Updating
+- Updating is the same
   
 ## Final thoughts/hints
 - YOU CAN DO THIS! Don't give up
