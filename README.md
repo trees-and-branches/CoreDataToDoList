@@ -243,7 +243,7 @@ Lets build it!
 ### Create
 - When we create an item, we need to associate it with the list to setup the relationship
 - Inside `createNewItem` pass in a `ToDoList`
-- Assign the `newList.toDoList` to that list. Then the relationship is established (both ways)
+- Assign the `newItem.toDoList` to that list. Then the relationship is established (both ways)
 ### Retrieve
 - We need to change how we fetch items now because there's a better way to do it. Through the relationship. 
 - Now you actually don't even need a fetch request to get the items of a list. A `ToDoList` has an array of its `items` built in to the relationship
