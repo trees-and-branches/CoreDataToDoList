@@ -7,21 +7,15 @@
 
 import UIKit
 
-protocol ItemCellDelegate {
-    func completeButtonPressed(item: Item)
-}
-
-
 class ItemTableViewCell: UITableViewCell {
     
-    static var reuseIdentifier: String { "ItemTableViewCell" }
+    static let reuseIdentifier = "ItemTableViewCell"
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
-    @IBOutlet weak var completedButton: UIButton!
+    @IBOutlet weak var checkboxImageView: UIImageView!
     
     var item: Item?
-    var delegate: ItemCellDelegate?
     
     private let checkedImage = UIImage(systemName: "checkmark.square.fill")
     private let squareImage = UIImage(systemName: "square")
@@ -32,12 +26,7 @@ class ItemTableViewCell: UITableViewCell {
         titleLabel.text = item.title
         subtitleLabel.text = item.subtitle
         let image = item.isCompleted ? checkedImage : squareImage
-        completedButton.setImage(image, for: .normal)
-    }
-
-    @IBAction func completeButtonPressed(_ sender: Any) {
-        guard let item else { return }
-        delegate?.completeButtonPressed(item: item)
+        checkboxImageView.image = image
     }
     
 }

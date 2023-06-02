@@ -9,62 +9,91 @@ import UIKit
 
 class ItemsViewController: UIViewController {
     
-    enum TableSection: Int {
+    enum TableSection: Int, CaseIterable {
         case incomplete, complete
     }
     
     // MARK: - Outlets
     
-    @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var textField: UITextField!
     
     
     // MARK: - Properties
     
     private let itemManager = ItemManager.shared
-    private lazy var datasource: ItemDataSource = {
-        let datasource = ItemDataSource(tableView: tableView) { tableView, indexPath, item in
-            let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.reuseIdentifier) as! ItemTableViewCell
-            cell.update(with: item)
-            cell.delegate = self
-            return cell
-        }
-        datasource.delegate = self
-        return datasource
-    }()
 
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.dataSource = datasource
-        generateNewSnapshot()
+        tableView.reloadData()
     }
 
 }
 
+// MARK: - Private
 
-// MARK: - Item Cell Delegate
+private extension ItemsViewController {
+    
+    func item(at indexPath: IndexPath) -> Item {
+        let tableSection = TableSection(rawValue: indexPath.section)!
+        switch tableSection {
+        case .incomplete:
+            return itemManager.incompleteItems()[indexPath.row]
+        case .complete:
+            return itemManager.completedItems()[indexPath.row]
+        }
+    }
+    
+}
 
-extension ItemsViewController: ItemCellDelegate {
 
-    func completeButtonPressed(item: Item) {
+// MARK: - TableView DataSource
+
+extension ItemsViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let tableSection = TableSection(rawValue: section)!
+        switch tableSection {
+        case .incomplete:
+            return "To-Do (\(itemManager.incompleteItems().count))"
+        case .complete:
+            return "Completed (\(itemManager.completedItems().count))"
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        TableSection.allCases.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let tableSection = TableSection(rawValue: section)!
+        switch tableSection {
+        case .incomplete:
+            return itemManager.incompleteItems().count
+        case .complete:
+            return itemManager.completedItems().count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.reuseIdentifier) as! ItemTableViewCell
+        let item = item(at: indexPath)
+        cell.update(with: item)
+        return cell
+    }
+
+}
+
+extension ItemsViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let item = item(at: indexPath)
         itemManager.toggleItemCompletion(item)
-        generateNewSnapshot()
-    }
-    
-}
-
-
-// MARK: - ItemDelegate
-
-extension ItemsViewController: ItemDelegate {
-    
-    func deleteItem(at indexPath: IndexPath) {
-        ItemManager.shared.delete(at: indexPath)
-        generateNewSnapshot()
+        tableView.reloadData()
     }
     
 }
@@ -77,31 +106,9 @@ extension ItemsViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let text = textField.text, !text.isEmpty else { return true }
         itemManager.createNewItem(with: text)
+        tableView.reloadSections([TableSection.incomplete.rawValue], with: .automatic)
         textField.text = ""
-        generateNewSnapshot()
         return true
-    }
-    
-}
-
-
-// MARK: - Private
-
-private extension ItemsViewController {
-    
-    func generateNewSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<TableSection, Item>()
-        if !itemManager.items.isEmpty {
-            snapshot.appendSections([.incomplete])
-            snapshot.appendItems(itemManager.items, toSection: .incomplete)
-        }
-        if !itemManager.completedItems.isEmpty {
-            snapshot.appendSections([.complete])
-            snapshot.appendItems(itemManager.completedItems, toSection: .complete)
-        }
-        DispatchQueue.main.async {
-            self.datasource.apply(snapshot)
-        }
     }
     
 }
