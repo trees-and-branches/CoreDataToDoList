@@ -2,7 +2,7 @@
 # Part 1
 ## Intro
 - If you look at the `main` branch you'll see a lot of code already. In fact, this is a functioning to-do app already! 
-- But we can do better than functional!
+- But we can make it better!
 - For starters, this app doesn't save the user's to-do items accross launches. How useful is that?
 - For this lab, you will be helping the user persist their data accross launches using (you guessed it) CORE DATA
 - Before we dive into Core Data though, familiarize yourself with the project. 
@@ -15,11 +15,9 @@
     - Focus on the data flow
     - Where do the Items live?-
     - How do you create a new Item?
-    - Check out the Diffable DataSource
-        - Refamiliarize yourself [here](https://wwdcbysundell.com/2019/diffable-data-sources-first-look/) or [here](https://developer.apple.com/wwdc19/220) if you have no idea what this is
     - Especially look at the `ItemManager` That's where we'll do a lot of our work
       - Right now its simple because all the data is stored in a local array of `[Item]`
-      - But pretty soon it will be on the AFTER side of a Before and After Core Data facelift!
+      - But pretty soon it will utilize Core Data
   
 ## Add Core Data Model
 - Lets do some modeling. . . Lets start with `Blue Steel` and then move on to `Magnum` jk 😜
@@ -46,7 +44,7 @@
 ## Add the Stack
 - To access the guts of Core Data you have to have an `NSPersistentContainer` and an `NSPersistentStoreCoordinator` and a handfu of other long names that start with `NS`
   - And remember we DON'T expect a 10 page essay on the inner workings of the Core Data Stack (only 7 pages 😏 jk)
-  - We just expect you to know that there's a core data stack that gives you access to the ManagedObjectContext which is where all your work will happen. 
+  - We just expect you to know that there's a core data stack that gives you access to the `ManagedObjectContext` which is where all your work will happen. 
 - Go check out the projects `AppDelegate.swift`
 - You'll find a bunch of code at the bottom of the file under the `// MARK: - Core Data stack`
 - That is a full Core Data Stack Apple provides as part of your project. That's one of the things you get when you check the `Core Data` box when the project is created
