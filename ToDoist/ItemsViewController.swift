@@ -33,6 +33,7 @@ class ItemsViewController: UIViewController {
 
 }
 
+
 // MARK: - Private
 
 private extension ItemsViewController {
@@ -85,7 +86,22 @@ extension ItemsViewController: UITableViewDataSource {
         return cell
     }
 
+    
+    // Swipe to Delete
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard editingStyle == .delete else { return }
+        itemManager.delete(at: indexPath)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    
 }
+
+// MARK: - TableView Delegate
 
 extension ItemsViewController: UITableViewDelegate {
     
