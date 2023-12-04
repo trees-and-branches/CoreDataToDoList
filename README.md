@@ -91,65 +91,55 @@ newItem.completedAt = nil
 - Lets do that next
   
 ## cRud (Retrieve)
-- So how do you get data out of core data?
+- Q: How do you get data out of core data?
 - A: Fetch Requests
 - A Fetch Request is a request for a specific subset of Core Data entities. 
-- Lets write a Fetch Request for all the incomplete Items stored in Core Data
+- Lets write a Fetch Request to get `Item`s stored in Core Data based on a predicate.
+
 - First, let's import CoreData in the `ItemManager`
-- Now lets add a function that will fetch all the incomplete Items
+- Now lets add a function that will fetch `Item`s given a predicate
   - First you create the fetch request
-  - Then specify the filter (or predicate) of which specific entities you want
-    - NSPredicate could be a whole day in itself! 
-    - We won't cover it right now but you could check out [this article](https://nshipster.com/nspredicate/) which is an oldie but a goodie
+  - Then use the predicate (Like a filter) of which specific entities you want (we'll talk briefly about predicates in a second)
   - Then you execute the fetch request on a `NSManagedObjectContext` (we'll use the viewContext)
 - Here's what it should look like in the end: 
 ```
-func fetchIncompleteItems() -> [Item] {
-    // Create the fetch request
-    let fetchRequest = Item.fetchRequest()
-    // Add the predicate for either incomplete or complete
-    fetchRequest.predicate = NSPredicate(format: "completedAt == nil")
-    let context = PersistenceController.shared.viewContext
-    // Execute the fetch request on a context (view context)
-    let fetchedItems = try? context.fetch(fetchRequest)
-    // If the fetch request fails, return an empty array of Items
-    return fetchedItems ?? []
-}
-
-```
-
-- Now lets head over to the `ItemsViewController` and fix the errors
-- Luckily the errors are only in one function `generateNewSnapshot()`
-- `generateNewSnapshot()` is the function responsible for finding the right items, and populating the tableview's datasource with the right data. 
-- Instead of populating the `Item`s from the array of items (that we deleted) we're going to use the new `fetchItems(completed:)` function we just wrote
-- Lets create a variable called `incompleteItems` and set it to the return value of `fetchItems(completed: false)`
-- Then do the same but for `completedItems`
-- Then if they are not empty we'll add them to the snapshot section like we did before. 
-- It should look like this: 
-```
-    func generateNewSnapshot() {
-        // Create a snapshot
-        var snapshot = NSDiffableDataSourceSnapshot<TableSection, Item>()
-        // Fetch incomplete and completed items from Core Data
-        let incompleteItems = itemManager.fetchIncompleteItems()
-        let completedItems = itemManager.fetchCompletedItems()
-        
-        // If there are incomplete items to show, add them to the tableview
-        if !incompleteItems.isEmpty {
-            snapshot.appendSections([.incomplete])
-            snapshot.appendItems(incompleteItems, toSection: .incomplete)
-        }
-        // If there are completed items to show, add them to the tableview
-        if !completedItems.isEmpty {
-            snapshot.appendSections([.complete])
-            snapshot.appendItems(completedItems, toSection: .complete)
-        }
-        // Apply the snapshot
-        DispatchQueue.main.async {
-            self.datasource.apply(snapshot)
+    private func fetchItems(matching predicate: NSPredicate) -> [Item] {
+        let fetchRequest = Item.fetchRequest()
+        fetchRequest.predicate = predicate        
+        do {
+            let context = PersistenceController.shared.viewContext
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error fetching items: \(error)")
+            return []
         }
     }
+
 ```
+- Now making a function to fetch incomplete items is basically just figuring out the correct predicate. 
+### Predicates Detour
+ - NSPredicate could be a whole day in itself! 
+- Predicates are basically filters. We're saying, fetch the data, but only the ones that match this predicate (or specific filter requirements)
+  - We won't cover it right now but you could check out [this article](https://nshipster.com/nspredicate/) which is an oldie but a goodie
+ - For incomplete items, for example, we want all `Item`s but really we only want the items whose `completedAt` property is nil (not yet completed)
+ - So we will call the `fetchItems` function and use this predicate: `completedAt == nil`
+  - It should look like this:
+  ```
+      func fetchIncompleteItems() -> [Item] {
+        return fetchItems(matching: NSPredicate(format: "completedAt == nil"))
+    }
+
+  ```
+- Do the same for completed items (`fetchCompletedItems`) see if you can figure out the predicate on your own (hint, you only have to change one character)
+  ### (Back to fetching)
+- Now lets head over to the `ItemsViewController` and fix the errors
+- Instead of populating the `Item`s from the array of items (that we deleted) we're going to use the new `fetchIncompleteItems` function we just wrote to get our items from Core Data 🎉
+- Lets create a local variable called `incompleteItems` that we will use to populate various places of our views.
+- Then we can reference that variable in the following places in `ItemsViewController`
+  - item(at indexPath)
+  - title(for header)
+  - numberOfRows(in section)
+- Then make a new function called `refreshData` that will refetch the items, set the result to this new `incompleteItems` property, and reload the table
 - 🔨🏃‍♂️ Build and run! (You will need to comment out the code in `ItemManager.toggleItemCompleted(item:)` and `ItemManager.remove(item:)`)
 - Assuming you did everything correctly, and if you added any items earlier before they were showing up, they should show up now! They were saved in Core Data and persist accross launches now! 
 - What if we want the newest item to show up at the top?
@@ -259,8 +249,8 @@ Lets build it!
 - Your THIRD source should be a neighbor to collaborate and brainstorm together
 - Your FOURTH source should be the instructor
 - Try not to look at the answer branch too early. There's learning in the struggle
-- But also if you're struggling for more than ~17 minutes on the same thing, ask for help. Aint nobody got time for that! Class is only 3 hours
-- There's a lot of power in a well-worded Google search
+- But also if you're struggling for more than ~13 minutes on the same thing, ask for help. Aint nobody got time for that! Class is only 3 hours
+- There's a lot of power in a well-worded Google search or ChatGP prompt
   - `iOS Swift how to add a Core Data relationship`
   - `iOS Swfit Core Data how to write a compound predicate`
   - `iOS swift initializer injection with storyboard segues`
