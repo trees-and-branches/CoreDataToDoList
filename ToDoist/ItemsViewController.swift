@@ -13,6 +13,8 @@ class ItemsViewController: UIViewController {
         case incomplete, complete
     }
     
+    
+    var incompleteItems = [Item]()
     // MARK: - Outlets
     
     @IBOutlet weak var tableView: UITableView!
@@ -42,7 +44,7 @@ private extension ItemsViewController {
         let tableSection = TableSection(rawValue: indexPath.section)!
         switch tableSection {
         case .incomplete:
-            return itemManager.incompleteItems()[indexPath.row]
+            return incompleteItems[indexPath.row]
         case .complete:
             return itemManager.completedItems()[indexPath.row]
         }
@@ -59,7 +61,7 @@ extension ItemsViewController: UITableViewDataSource {
         let tableSection = TableSection(rawValue: section)!
         switch tableSection {
         case .incomplete:
-            return "To-Do (\(itemManager.incompleteItems().count))"
+            return "To-Do (\(incompleteItems.count))"
         case .complete:
             return "Completed (\(itemManager.completedItems().count))"
         }
@@ -73,7 +75,7 @@ extension ItemsViewController: UITableViewDataSource {
         let tableSection = TableSection(rawValue: section)!
         switch tableSection {
         case .incomplete:
-            return itemManager.incompleteItems().count
+            return incompleteItems.count
         case .complete:
             return itemManager.completedItems().count
         }

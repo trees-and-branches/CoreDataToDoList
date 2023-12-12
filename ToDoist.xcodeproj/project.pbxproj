@@ -17,6 +17,7 @@
 		2E26E13428FB6BDF00717208 /* ToDoist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E26E13228FB6BDF00717208 /* ToDoist.xcdatamodeld */; };
 		2E26E13628FB6BE000717208 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E26E13528FB6BE000717208 /* Assets.xcassets */; };
 		2E26E13928FB6BE000717208 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E26E13728FB6BE000717208 /* LaunchScreen.storyboard */; };
+		EA5C7D692B27E4F000B11BCA /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C7D682B27E4F000B11BCA /* PersistenceController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		2E26E13528FB6BE000717208 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2E26E13828FB6BE000717208 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E26E13A28FB6BE000717208 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EA5C7D682B27E4F000B11BCA /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +50,7 @@
 		2E26E11D28FB6BDF00717208 = {
 			isa = PBXGroup;
 			children = (
+				EA5C7D682B27E4F000B11BCA /* PersistenceController.swift */,
 				2E26E12828FB6BDF00717208 /* ToDoist */,
 				2E26E12728FB6BDF00717208 /* Products */,
 			);
@@ -155,6 +158,7 @@
 				2E176FDE2903B30B001B5AE6 /* ItemTableViewCell.swift in Sources */,
 				2E26E13428FB6BDF00717208 /* ToDoist.xcdatamodeld in Sources */,
 				2E176FE22903BA15001B5AE6 /* Item.swift in Sources */,
+				EA5C7D692B27E4F000B11BCA /* PersistenceController.swift in Sources */,
 				2E176FE02903B9E4001B5AE6 /* ItemManager.swift in Sources */,
 				2E26E12C28FB6BDF00717208 /* SceneDelegate.swift in Sources */,
 			);

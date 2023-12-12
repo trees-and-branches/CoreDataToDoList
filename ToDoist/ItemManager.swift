@@ -6,18 +6,44 @@
 //
 
 import Foundation
+import CoreData
 
 class ItemManager {
     static let shared = ItemManager()
     
     var allItems = [Item]()
-
+    
     
     // Create
     
     func createNewItem(with title: String) {
-        let newItem = Item(title: title)
+        let newItem = Item(context: PersistenceController.shared.viewContext)
+        newItem.id = UUID().uuidString
+        newItem.title = title
+        newItem.createdAt = Date()
+        newItem.completedAt = nil
         allItems.append(newItem)
+        PersistenceController.shared.saveContext()
+    }
+    // fetch?
+    private func fetchItems(matching predicate: NSPredicate) -> [Item] {
+        let fetchRequest = Item.fetchRequest()
+        fetchRequest.predicate = predicate
+        do {
+            let context = PersistenceController.shared.viewContext
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error fetching items: \(error)")
+            return []
+        }
+    }
+    
+    func fetchInCompleteItems() -> [Item] {
+        return fetchItems(matching: NSPredicate(format: "completedAt == nil"))
+    }
+    
+    func fetchCompleteItems() -> [Item] {
+        return fetchItems(matching: NSPredicate(format: "completedAt != nil"))
     }
     
     // Retrieve
