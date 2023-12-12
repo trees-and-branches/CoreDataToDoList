@@ -120,7 +120,7 @@ extension ItemsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = item(at: indexPath)
         itemManager.toggleItemCompletion(item)
-        tableView.reloadData()
+        refreshData()
     }
     
 }
