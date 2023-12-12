@@ -29,6 +29,7 @@ class ItemManager {
     private func fetchItems(matching predicate: NSPredicate) -> [Item] {
         let fetchRequest = Item.fetchRequest()
         fetchRequest.predicate = predicate
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false), NSSortDescriptor(key: "completedAt", ascending: false)]
         do {
             let context = PersistenceController.shared.viewContext
             return try context.fetch(fetchRequest)
@@ -43,8 +44,12 @@ class ItemManager {
     }
     
     func fetchCompleteItems() -> [Item] {
+         
         return fetchItems(matching: NSPredicate(format: "completedAt != nil"))
+        
     }
+    
+
     
     // Retrieve
     
@@ -61,24 +66,18 @@ class ItemManager {
     // Update
     
     func toggleItemCompletion(_ item: Item) {
-        var updatedItem = item
-        updatedItem.completedAt = item.isCompleted ? nil : Date()
-        if let index = allItems.firstIndex(of: item) {
-            allItems.remove(at: index)
-        }
-        allItems.append(updatedItem)
+      item.completedAt = item.isCompleted ? nil : Date()
+      PersistenceController.shared.saveContext()
     }
-    
+
     // Delete
     
-    func delete(at indexPath: IndexPath) {
-        remove(item(at: indexPath))
-    }
-    
     func remove(_ item: Item) {
-        guard let index = allItems.firstIndex(of: item) else { return }
-        allItems.remove(at: index)
-    }
+      let context = PersistenceController.shared.viewContext
+      context.delete(item)
+      PersistenceController.shared.saveContext()
+  }
+
 
     private func item(at indexPath: IndexPath) -> Item {
         let items = indexPath.section == 0 ? incompleteItems() : completedItems()

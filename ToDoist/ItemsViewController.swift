@@ -15,6 +15,7 @@ class ItemsViewController: UIViewController {
     
     
     var incompleteItems = [Item]()
+    var completeItems = [Item]()
     // MARK: - Outlets
     
     @IBOutlet weak var tableView: UITableView!
@@ -30,7 +31,7 @@ class ItemsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.reloadData()
+        refreshData()
     }
 
 }
@@ -46,8 +47,16 @@ private extension ItemsViewController {
         case .incomplete:
             return incompleteItems[indexPath.row]
         case .complete:
-            return itemManager.completedItems()[indexPath.row]
+            return completeItems[indexPath.row]
         }
+    }
+    
+    // refresh
+    
+    func refreshData() {
+        incompleteItems = itemManager.fetchInCompleteItems()
+        completeItems = itemManager.fetchCompleteItems()
+        tableView.reloadData()
     }
     
 }
@@ -63,7 +72,7 @@ extension ItemsViewController: UITableViewDataSource {
         case .incomplete:
             return "To-Do (\(incompleteItems.count))"
         case .complete:
-            return "Completed (\(itemManager.completedItems().count))"
+            return "Completed (\(completeItems.count))"
         }
     }
     
@@ -77,7 +86,7 @@ extension ItemsViewController: UITableViewDataSource {
         case .incomplete:
             return incompleteItems.count
         case .complete:
-            return itemManager.completedItems().count
+            return completeItems.count
         }
     }
     
@@ -97,7 +106,7 @@ extension ItemsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else { return }
-        itemManager.delete(at: indexPath)
+        itemManager.remove(item(at: indexPath))
         tableView.deleteRows(at: [indexPath], with: .automatic)
     }
     
@@ -126,6 +135,7 @@ extension ItemsViewController: UITextFieldDelegate {
         itemManager.createNewItem(with: text)
         tableView.reloadSections([TableSection.incomplete.rawValue], with: .automatic)
         textField.text = ""
+        refreshData()
         return true
     }
     
