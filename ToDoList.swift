@@ -21,16 +21,12 @@ extension ToDoList {
     var createdAtString: String {
         Item.relativeDateFormatter.localizedString(for: createdAtDate, relativeTo: Date())
     }
-    var completedAtString: String? {
-        guard let completedAt else { return nil }
-        return Item.relativeDateFormatter.localizedString(for: completedAt, relativeTo: Date())
-    }
     
 }
 
 // MARK: - Date Formatter
 
-extension Item {
+extension ToDoList {
     
     static var relativeDateFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()

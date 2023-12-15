@@ -39,17 +39,28 @@ extension ToDoListsViewController: UITableViewDataSource, UITableViewDelegate {
         <#code#>
     }
     
-    
 }
 
 extension ToDoListsViewController {
+
     func showInputDialog(_ placeholder: String?) {
         let alert = UIAlertController()
         alert.addTextField { (textField:UITextField) in
-            textField.keyboardType = UIKeyboardType.default
+            
+            textField.keyboardType = .default
+            textField.returnKeyType = .done
+            
         }
-
-
+        
+        alert.addAction(UIAlertAction(title: "enter", style: .default, handler: { _ in
+            // Accessing the text field's value
+            if let textField = alert.textFields?.first, let textValue = textField.text, !textValue.isEmpty {
+             // check if toDoLists array contains an instance with the same name, if not instantiate a new toDoList and add it to the toDoLists array
+                
+            }
+        }))
+        
+        
         self.present(alert, animated: true, completion: nil)
     }
 }
