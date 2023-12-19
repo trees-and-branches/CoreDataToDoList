@@ -13,7 +13,7 @@ class ItemsViewController: UIViewController {
         case incomplete, complete
     }
     
-    
+    var toDoList = ToDoList()
     var incompleteItems = [Item]()
     // MARK: - Outlets
     
@@ -27,6 +27,7 @@ class ItemsViewController: UIViewController {
 
     
     // MARK: - Lifecycle
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +47,7 @@ private extension ItemsViewController {
         case .incomplete:
             return incompleteItems[indexPath.row]
         case .complete:
-            return itemManager.completedItems()[indexPath.row]
+            return itemManager.completedItems(for: toDoList)[indexPath.row]
         }
     }
     
@@ -63,7 +64,7 @@ extension ItemsViewController: UITableViewDataSource {
         case .incomplete:
             return "To-Do (\(incompleteItems.count))"
         case .complete:
-            return "Completed (\(itemManager.completedItems().count))"
+            return "Completed (\(itemManager.completedItems(for: toDoList).count))"
         }
     }
     
@@ -77,7 +78,7 @@ extension ItemsViewController: UITableViewDataSource {
         case .incomplete:
             return incompleteItems.count
         case .complete:
-            return itemManager.completedItems().count
+            return itemManager.completedItems(for: toDoList).count
         }
     }
     
@@ -97,7 +98,7 @@ extension ItemsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else { return }
-        itemManager.delete(at: indexPath)
+        itemManager.delete(at: indexPath, for: toDoList)
         tableView.deleteRows(at: [indexPath], with: .automatic)
     }
     
@@ -110,7 +111,7 @@ extension ItemsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = item(at: indexPath)
-        itemManager.toggleItemCompletion(item)
+        itemManager.toggleItemCompletion(item, for: toDoList)
         tableView.reloadData()
     }
     
@@ -123,7 +124,7 @@ extension ItemsViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let text = textField.text, !text.isEmpty else { return true }
-        itemManager.createNewItem(with: text)
+        itemManager.createNewItem(with: text, in: toDoList)
         tableView.reloadSections([TableSection.incomplete.rawValue], with: .automatic)
         textField.text = ""
         return true

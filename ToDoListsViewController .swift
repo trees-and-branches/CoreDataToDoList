@@ -8,7 +8,21 @@
 import UIKit
 
 class ToDoListsViewController: UIViewController {
-
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    let itemManager = ItemManager.shared
+    let toDoLists = [ToDoList]()
+//    
+//    init(itemManager: ItemManager, toDoLists: ToDoList) {
+//        self.toDoLists = itemManager.fetchToDoLists(matching: NSPredicate(format: "ToDoList"))
+//        super .init(coder: coder)
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+    
     @IBOutlet weak var toDoTableView: UITableView!
     
     override func viewDidLoad() {
@@ -24,6 +38,12 @@ class ToDoListsViewController: UIViewController {
     
     }
     
+    @IBSegueAction func toDoListTapped(_ coder: NSCoder, sender: Any?) -> ItemsViewController? {
+        return ItemsViewController(coder: coder)
+    }
+
+
+    
 }
 
 
@@ -32,19 +52,36 @@ extension ToDoListsViewController: UITableViewDataSource, UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
+        return toDoLists.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoListCell", for: indexPath)
+        let item = toDoLists[indexPath.row]
+        var content = cell.defaultContentConfiguration()
+        content.text = item.title
+        
+        cell.contentConfiguration = content
+        
+        return cell
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let cell = sender as? UITableViewCell,
+           let indexPath = tableView.indexPath(for: cell),
+           let itemsVC = segue.destination as? ItemsViewController {
+            let selectedToDoList = toDoLists[indexPath.row]
+            itemsVC.toDoList = selectedToDoList
+        }
+    }
+
     
 }
 
 extension ToDoListsViewController {
 
     func showInputDialog(_ placeholder: String?) {
-        let alert = UIAlertController()
+        let alert = UIAlertController(title: "Enter Text", message: nil, preferredStyle: .alert)
         alert.addTextField { (textField:UITextField) in
             
             textField.keyboardType = .default
@@ -56,7 +93,8 @@ extension ToDoListsViewController {
             // Accessing the text field's value
             if let textField = alert.textFields?.first, let textValue = textField.text, !textValue.isEmpty {
              // check if toDoLists array contains an instance with the same name, if not instantiate a new toDoList and add it to the toDoLists array
-                
+                self.itemManager.createNewToDoList(with: textValue)
+                self.tableView.reloadData()
             }
         }))
         
