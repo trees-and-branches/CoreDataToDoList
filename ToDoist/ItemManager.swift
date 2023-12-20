@@ -37,9 +37,9 @@ class ItemManager {
         PersistenceController.shared.saveContext()
     }
     // fetch?
-    func fetchToDoLists(matching predicate: NSPredicate) -> [ToDoList] {
+    func fetchToDoLists(matching predicate: NSPredicate? = nil) -> [ToDoList] {
         let fetchRequest = ToDoList.fetchRequest()
-        fetchRequest.predicate = predicate
+//        fetchRequest.predicate = predicate // This can be nil, fetching all instances
         do {
             let context = PersistenceController.shared.viewContext
             return try context.fetch(fetchRequest)
@@ -48,6 +48,7 @@ class ItemManager {
             return []
         }
     }
+
 
         func items(for toDoList: ToDoList) -> [Item] {
             return (toDoList.items as? Set<Item>)?.sorted(by: { $0.sortDate < $1.sortDate }) ?? []

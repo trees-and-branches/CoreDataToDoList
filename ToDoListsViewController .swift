@@ -12,8 +12,8 @@ class ToDoListsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     let itemManager = ItemManager.shared
-    let toDoLists = [ToDoList]()
-//    
+    var toDoLists = [ToDoList]()
+//
 //    init(itemManager: ItemManager, toDoLists: ToDoList) {
 //        self.toDoLists = itemManager.fetchToDoLists(matching: NSPredicate(format: "ToDoList"))
 //        super .init(coder: coder)
@@ -24,6 +24,10 @@ class ToDoListsViewController: UIViewController {
 //    }
     
     @IBOutlet weak var toDoTableView: UITableView!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        toDoLists = itemManager.fetchToDoLists(matching: NSPredicate(format: "name == %@", "ToDoList"))
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,6 +98,7 @@ extension ToDoListsViewController {
             if let textField = alert.textFields?.first, let textValue = textField.text, !textValue.isEmpty {
              // check if toDoLists array contains an instance with the same name, if not instantiate a new toDoList and add it to the toDoLists array
                 self.itemManager.createNewToDoList(with: textValue)
+                self.toDoLists = self.itemManager.fetchToDoLists(matching: NSPredicate(format: "name == %@", "ToDoList"))
                 self.tableView.reloadData()
             }
         }))
